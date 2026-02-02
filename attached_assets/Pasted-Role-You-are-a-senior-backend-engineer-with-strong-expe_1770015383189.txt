@@ -1,0 +1,243 @@
+Role: You are a senior backend engineer with strong experience in Django, Django REST Framework, Celery, Redis, PostgreSQL, and Docker.
+Build a production-ready backend system following the exact specifications below.
+
+📌 PROJECT OVERVIEW
+
+Create a Credit Approval System backend using Django 4+ and Django REST Framework.
+There is NO frontend.
+The system must be fully dockerized and run using docker-compose up --build.
+
+🧱 TECH REQUIREMENTS (MANDATORY)
+
+Django 4+
+
+Django REST Framework
+
+PostgreSQL (as primary DB)
+
+Celery + Redis for background tasks
+
+Docker + Docker Compose
+
+Python 3.10+
+
+Clean, modular architecture
+
+No hardcoded secrets (use environment variables)
+
+📁 PROJECT STRUCTURE (STRICT)
+credit_system/
+├── config/
+│   ├── settings.py
+│   ├── urls.py
+│   ├── celery.py
+│   └── __init__.py
+│
+├── core/
+│   ├── models.py
+│   ├── serializers.py
+│   ├── views.py
+│   ├── urls.py
+│   ├── tasks.py
+│   ├── services/
+│   │   ├── credit_score.py
+│   │   ├── eligibility.py
+│   │   └── emi.py
+│   └── __init__.py
+│
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── manage.py
+└── README.md
+
+🗄 DATABASE MODELS
+
+Customer
+
+customer_id (auto)
+
+first_name
+
+last_name
+
+phone_number (unique)
+
+age
+
+monthly_salary
+
+approved_limit
+
+current_debt
+
+Loan
+
+loan_id (auto)
+
+customer (FK)
+
+loan_amount
+
+interest_rate
+
+tenure
+
+monthly_installment
+
+emis_paid_on_time
+
+start_date
+
+end_date
+
+is_active
+
+⚙️ BACKGROUND TASKS
+
+Use Celery + Redis
+
+Ingest data from:
+
+customer_data.xlsx
+
+loan_data.xlsx
+
+Data ingestion MUST run as a background task
+
+Use bulk inserts for performance
+
+📊 BUSINESS LOGIC (VERY IMPORTANT)
+Approved Credit Limit
+approved_limit = round(36 * monthly_salary, -5)
+
+💰 EMI CALCULATION
+
+Use compound interest formula:
+
+EMI = P * r * (1+r)^n / ((1+r)^n - 1)
+where r = annual_rate / (12*100)
+
+📈 CREDIT SCORE (OUT OF 100)
+
+Calculate credit score using:
+
+Past loans paid on time
+
+Number of loans taken
+
+Loan activity in current year
+
+Loan approved volume
+
+Rules:
+
+If total current loan amount > approved_limit → credit_score = 0
+
+If total current EMIs > 50% of monthly salary → reject loan
+
+🧠 LOAN APPROVAL RULES
+Credit Score	Decision
+> 50	Approve
+30–50	Approve only if interest ≥ 12%
+10–30	Approve only if interest ≥ 16%
+< 10	Reject
+
+If interest rate does NOT match slab:
+
+Return corrected_interest_rate (lowest valid slab)
+
+🔌 API ENDPOINTS (EXACT)
+POST /register
+
+Create customer
+
+Auto-calculate approved_limit
+
+POST /check-eligibility
+
+Check loan eligibility
+
+Return approval status
+
+Return corrected interest rate if needed
+
+Return calculated EMI always
+
+POST /create-loan
+
+Create loan ONLY if eligible
+
+Update customer current_debt
+
+GET /view-loan/{loan_id}
+
+Return loan + customer details
+
+GET /view-loans/{customer_id}
+
+Return all active loans
+
+Include repayments_left
+
+🐳 DOCKER REQUIREMENTS
+
+Separate services:
+
+web (Django)
+
+db (PostgreSQL)
+
+redis
+
+celery worker
+
+Must run with single docker-compose command
+
+Include .env support
+
+📄 README.md MUST INCLUDE
+
+Project overview
+
+Tech stack
+
+Setup instructions
+
+API endpoints summary
+
+Docker run command
+
+❌ DO NOT
+
+Do NOT include frontend
+
+Do NOT hardcode secrets
+
+Do NOT mix business logic in views
+
+Do NOT rely on SQLite
+
+✅ FINAL DELIVERABLE
+
+Fully working backend
+
+Clean code
+
+Correct financial logic
+
+Dockerized system
+
+Ready for GitHub submission
+
+🟢 AFTER GENERATION (IMPORTANT)
+
+After generating the project:
+
+Verify EMI & credit score logic
+
+Ensure Docker works
+
+Remove any Replit-specific files
+
+Prepare for GitHub submission
